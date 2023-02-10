@@ -25,6 +25,7 @@ class UserFilter extends QueryFilter
             'skills' => 'array|exists:skills,id',
             'from' => 'date_format:d/m/Y',
             'to' => 'date_format:d/m/Y',
+            'team' => 'in:with_team,without_team',
             'order' => [new SortableColumn(['first_name', 'email', 'date', 'login'])],
         ];
     }
@@ -81,4 +82,12 @@ class UserFilter extends QueryFilter
         $query->orderBy($this->getColumnName($column), $direction);
     }
 
+    public function team($query, $team)
+    {
+        if ($team === 'with_team') {
+            $query->has('team');
+        } elseif ($team === 'without_team') {
+            $query->doesntHave('team');
+        }
+    }
 }

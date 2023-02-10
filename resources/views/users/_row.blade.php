@@ -17,6 +17,7 @@
     </td>
     <td class="text-right">
         @if ($user->trashed())
+            <a href="{{ route('users.restored', $user->id) }}" class="btn btn-link">Restaurar</a>
             <form action="{{ route('user.destroy', $user) }}" method="POST">
                 @csrf
                 @method('DELETE')

@@ -88,6 +88,15 @@ class UserController extends Controller
         return redirect()->route('users');
     }
 
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->where('id', $id)->firstOrFail();
+
+        $user->restore();
+
+        return redirect()->route('users.trashed');
+    }
+
     /*public function trashed(Sortable $sortable)
     {
         $users = User::onlyTrashed()
@@ -106,5 +115,4 @@ class UserController extends Controller
             'sortable' => $sortable,
         ]);
     }*/
-
 }

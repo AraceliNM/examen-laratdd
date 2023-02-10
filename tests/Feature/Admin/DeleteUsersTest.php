@@ -69,4 +69,40 @@ class DeleteUsersTest extends TestCase
         $user->refresh();
         $this->assertTrue($user->trashed());
     }
+
+    /** @test - Ejercicio 3 */
+    public function it_restores_a_user_of_the_trash()
+    {
+        $this->withExceptionHandling();
+
+        $user = factory(User::class)->create([
+            'deleted_at' => now(),
+        ]);
+
+        $this->get('usuarios/restaurar/' . $user->id)
+            ->assertRedirect('usuarios/papelera');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    /** @test - Ejercicio 3 */
+    public function it_cannot_restore_a_user_that_is_not_in_the_trash()
+    {
+        $this->withExceptionHandling();
+
+        $user = factory(User::class)->create([
+            'deleted_at' => null,
+        ]);
+
+        $this->get('usuarios/restaurar/' . $user->id)
+            ->assertStatus(404);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'deleted_at' => null,
+        ]);
+    }
 }
